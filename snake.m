@@ -21,8 +21,8 @@ teta = teta';
 
 direction = ""
   
+figure(gcf,'Windowkeypressfcn',@callbackfunction);
 while true
-   set(gcf,'Windowkeypressfcn',@callbackfunction);
  
    map = drawPixel(map,x,y,0);
    x  = x-10;
