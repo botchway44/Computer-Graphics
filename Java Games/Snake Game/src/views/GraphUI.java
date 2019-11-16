@@ -1,10 +1,10 @@
-package ui;
+package views;
 
 import javax.swing.JButton;
 
 import acm.graphics.GLine;
 import acm.program.GraphicsProgram;
-import core.Grid;
+import models.Grid;
 
 public class GraphUI extends GraphicsProgram implements Runnable{
 

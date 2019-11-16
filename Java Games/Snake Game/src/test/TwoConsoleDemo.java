@@ -8,7 +8,7 @@ package test;
 
 import acm.io.*;
 import acm.program.*;
-import ui.GraphUI;
+import views.GraphUI;
 
 import java.awt.*;
 import java.io.*;
