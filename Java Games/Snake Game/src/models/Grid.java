@@ -61,11 +61,20 @@ public class Grid {
 		return this.height;
 	}
 	
+
 	public int getXMidPoint() {
 		return computeMidPoint(this.x_min, this.x_max, this.width);
 	}
 	
 	public int getYMidPoint() {
 		return computeMidPoint(this.y_min, this.y_max, this.height);
+	}
+
+	public int getPixel_gap() {
+		return pixel_gap;
+	}
+
+	public void setPixel_gap(int pixel_gap) {
+		this.pixel_gap = pixel_gap;
 	}
 }
