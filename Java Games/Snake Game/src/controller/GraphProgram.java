@@ -2,15 +2,18 @@ package controller;
 import java.awt.FlowLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Vector;
 
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import acm.gui.TableLayout;
 import acm.program.Program;
 import core.GraphicsLibrary;
+import core.Polygon;
 import models.Grid;
 import views.GraphUI;
 
@@ -20,52 +23,74 @@ public class GraphProgram extends Program {
 	  private JTextField xcord;
 	  private JTextField ycord;
 	  private Grid grid;
+	  private HashMap<String,Polygon> graphPolygonsMap;
+	  private Vector<String> graphPolygonNames;
+	  private ComboBox<String> graphPolygons;
+	private JTextField polygonName;
+	  
+	  public void init() {
+//		  this.setResizable(false);
+			this.setLayout(new TableLayout(5,1));		
+			
+//		  GridController gd = new GridController();
+//		     gd.init();
+//		     
+//		     JPanel gridScalePanel = new JPanel();
+//		     gridScalePanel.add(new JLabel("X axis"));
+//		     gridScalePanel.add(gd.x_slide);
+//
+//		     gridScalePanel.add(new JLabel("Y axis"));
+//		     gridScalePanel.add(gd.y_slide);
+//		     add(gridScalePanel);
+			
+			
+			graphPolygonNames = new Vector<String>();
+			 
+			 JPanel createPolygon = new JPanel();
+			 polygonName = new JTextField("Enter Polygon name",12);
+			
+			 createPolygon.add(polygonName);
+			 createPolygon.add(new JButton("Create"));
+			 add(createPolygon);
+		     
+		     JPanel gridVisibilityPanel = new JPanel();
+		     gridVisibilityPanel.setLayout(new TableLayout(4,2));
+		     gridVisibilityPanel.add(new JButton("Remove Grid"));
+		     gridVisibilityPanel.add(new JButton("Show Grid"));
+		     
+		     
+		     gridVisibilityPanel.add(new JButton("Remove Horizontal"));
+		     gridVisibilityPanel.add(new JButton("Show Horizontal"));
+			 
+		     gridVisibilityPanel.add(new JButton("Remove Vertical"));
+		     gridVisibilityPanel.add(new JButton("Show Vertical"));
+		     
+			 gridVisibilityPanel.add(new JButton("Remove Labels"));
+		     gridVisibilityPanel.add(new JButton("Show Labels"));
+		     add(gridVisibilityPanel);
+		     
+		     
+		     //add a UI for entering coordinates
+		     JPanel inputPanel = new JPanel();
+		     xcord = new JTextField("0",12);
+		     ycord = new JTextField("0",12);
+		     inputPanel.add(xcord);
+		     inputPanel.add(ycord);
+		     inputPanel.add(new JButton("Add Cordinate"));
+		     
+		     add(inputPanel);
+		     
+		    
+		     
+	  }
 	public void run() {
-//		this.setResizable(false);
-		this.setLayout(new TableLayout(5,1));
-//		setSize(400,700);
+		  setSize(350,700);
+		  this.setResizable(false);
 		  grid = new Grid(700,700, -10, 10, -10, 10);
 		   
 		  
 	      
-	     GridController gd = new GridController();
-	     gd.init();
-	     
-	     JPanel gridScalePanel = new JPanel();
-	     gridScalePanel.add(new JLabel("X axis"));
-	     gridScalePanel.add(gd.x_slide);
-
-	     gridScalePanel.add(new JLabel("Y axis"));
-	     gridScalePanel.add(gd.y_slide);
-	     add(gridScalePanel);
-	     
-	     JPanel gridVisibilityPanel = new JPanel();
-	     gridVisibilityPanel.setLayout(new FlowLayout());
-	     gridVisibilityPanel.add(new JButton("Remove Grid"));
-	     gridVisibilityPanel.add(new JButton("Show Grid"));
-	     
-	     
-	     gridVisibilityPanel.add(new JButton("Remove Horizontal"));
-	     gridVisibilityPanel.add(new JButton("Show Horizontal"));
-		 
-	     gridVisibilityPanel.add(new JButton("Remove Vertical"));
-	     gridVisibilityPanel.add(new JButton("Show Vertical"));
-	     
-		 gridVisibilityPanel.add(new JButton("Remove Labels"));
-	     gridVisibilityPanel.add(new JButton("Show Labels"));
-	     add(gridVisibilityPanel);
-	     
-	     
-	     //add a UI for entering coordinates
-	     JPanel inputPanel = new JPanel();
-	     xcord = new JTextField("x coord",12);
-	     ycord = new JTextField("y coord",12);
-	     inputPanel.add(xcord);
-	     inputPanel.add(ycord);
-	     inputPanel.add(new JButton("Add Cordinate"));
-	     
-	     add(inputPanel);
-	     
+	   
 	     
 	       graph  = new GraphUI(grid);
 	       graph.start();
@@ -121,7 +146,9 @@ public class GraphProgram extends Program {
 			Point p = new Point();
 			p.x = (int) x;
 			p.y = (int) y;
-			GraphicsLibrary.getPixelPosition(grid, p);
+			Point pv = GraphicsLibrary.getPixelPosition(grid, p);
+			
+			graph.DrawOval(pv);
 		}
 	}
 }

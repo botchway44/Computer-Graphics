@@ -1,6 +1,7 @@
 package views;
 
 import java.awt.Color;
+import java.awt.Point;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -8,6 +9,7 @@ import javax.swing.JButton;
 import acm.graphics.GLabel;
 import acm.graphics.GLine;
 import acm.graphics.GObject;
+import acm.graphics.GOval;
 import acm.program.GraphicsProgram;
 import models.Grid;
 
@@ -154,6 +156,11 @@ public class GraphUI extends GraphicsProgram implements Runnable{
 	public void ShowLabels() {
 	this.ShowLine(HorizontalLabels, true);
 	this.ShowLine(VerticalLabels, true);
+	}
+	
+	
+	public void DrawOval(Point p) {
+		add(new GOval(20,20),(int)p.getX() - 10, (int)p.getY() - 10);
 	}
 }
 
