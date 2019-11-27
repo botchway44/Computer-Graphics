@@ -6,6 +6,8 @@ public class Grid {
 
 	private int width; //screen width
 	private int height;//screen height
+	private int x_midpoint; 
+	private int y_midpoint;
 	private int pixel_gap; //pixel gap
 	
 	private double x_min;
@@ -16,8 +18,7 @@ public class Grid {
 	private int x_units = 1;
 	private int y_units = 1;
 	
-	private GLine vline;
-	private GLine hline;
+
 	
 	public Grid(int width,int height) {
 		this.width = width;
@@ -63,17 +64,54 @@ public class Grid {
 	
 
 	public int getXMidPoint() {
-		return computeMidPoint(this.x_min, this.x_max, this.width);
+		//originally
+//		return computeMidPoint(this.x_min, this.x_max, this.width);
+		
+		//now
+		return this.getWidth()  / 2;
 	}
 	
 	public int getYMidPoint() {
-		return computeMidPoint(this.y_min, this.y_max, this.height);
+		//originally
+//		return computeMidPoint(this.y_min, this.y_max, this.height);
+		
+		//now
+		return this.getHeight()/2;
 	}
 
 	public int getPixel_gap() {
 		return pixel_gap;
 	}
+	
+	
+	public int getXPixel_gap() {
+		return  (int) (this.getXMidPoint() / Math.abs( this.x_max)) ;
+	}
+	
 
+	public int getYPixel_gap() {
+		return  (int) (this.getYMidPoint() /  Math.abs( this.y_max)) ;
+	}
+	
+	public double getXMin() {
+		return this.x_min;
+	}
+	
+	
+	public double getXMax() {
+		return this.getXMax();
+	}
+	
+	
+	public double getYMin() {
+		return this.getYMin();
+	}
+	
+
+	public double getYMax() {
+		return this.getYMax();
+	}
+	
 	public void setPixel_gap(int pixel_gap) {
 		this.pixel_gap = pixel_gap;
 	}

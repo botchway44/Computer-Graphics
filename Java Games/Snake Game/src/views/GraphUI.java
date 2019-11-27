@@ -1,5 +1,6 @@
 package views;
 
+import java.awt.Color;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -15,7 +16,6 @@ public class GraphUI extends GraphicsProgram implements Runnable{
 	private Grid grid;
 	private GLine vline;
 	private GLine hline;
-
 	private ArrayList<GObject> VerticalLines = new ArrayList<GObject>();
 	private ArrayList<GObject> HorizontalLines = new ArrayList<GObject>();
 	
@@ -27,11 +27,19 @@ public class GraphUI extends GraphicsProgram implements Runnable{
 	}
 	public void run() {
 		setSize(grid.getWidth(), grid.getHeight());
-		
-		vline = new GLine(grid.getXMidPoint(),0, grid.getXMidPoint(), grid.getHeight());
-		hline = new GLine(0,grid.getYMidPoint(),  grid.getWidth(),grid.getYMidPoint());
-		
+
 	}
+	
+	public void colorMids() {
+		vline = new GLine(grid.getXMidPoint(),0, grid.getXMidPoint(), grid.getHeight());
+		vline.setColor(Color.red);
+		add(vline);
+		hline = new GLine(0,grid.getYMidPoint(),  grid.getWidth(),grid.getYMidPoint());
+		hline.setColor(Color.red);
+		
+		add(hline);
+	}
+	
 	
 	public void DrawGrid() {
 		//draw the grid from top to bottom 
@@ -63,11 +71,12 @@ public class GraphUI extends GraphicsProgram implements Runnable{
 		
 		
 	}
+	
 	public void DrawHorizontal() {
-		//draw the grid from top to bottom 
-		int leftCount = (grid.getHeight()/2)/grid.getPixel_gap();
 		
-		for(int i=0, j=0; i<grid.getHeight(); i+=grid.getPixel_gap(),j++) {
+		int leftCount = (grid.getHeight()/2)/grid.getXPixel_gap();
+		
+		for(int i=0, j=0; i<grid.getHeight(); i+=grid.getXPixel_gap(),j++) {
 			GLine hl = new GLine(0,i,grid.getWidth(),i);
 			
 			GLabel vlabel = null;
@@ -80,6 +89,7 @@ public class GraphUI extends GraphicsProgram implements Runnable{
 				
 				 vlabel = new GLabel(""+v);
 			}
+			
 			add(vlabel,grid.getWidth()/2 - vlabel.getWidth(), getHeight()-i );
 			VerticalLabels.add(vlabel);
 			
@@ -90,9 +100,9 @@ public class GraphUI extends GraphicsProgram implements Runnable{
 	}
 
 	public void DrawVertical() {
-		int leftCount = (grid.getWidth()/2)/grid.getPixel_gap();
+		int leftCount = (grid.getWidth()/2)/grid.getYPixel_gap();
 		
-		for(int i=0, j=0; i<grid.getWidth(); i+=grid.getPixel_gap(),j++) {
+		for(int i=0, j=0; i<grid.getWidth(); i+=grid.getYPixel_gap(),j++) {
 			GLine vl = new GLine(i,0,i,grid.getHeight());
 
 			GLabel hlabel = null;
