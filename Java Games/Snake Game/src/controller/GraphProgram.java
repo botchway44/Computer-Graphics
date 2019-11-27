@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Vector;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -14,6 +15,7 @@ import acm.gui.TableLayout;
 import acm.program.Program;
 import core.GraphicsLibrary;
 import core.Polygon;
+import javafx.scene.control.ListView;
 import models.Grid;
 import views.GraphUI;
 
@@ -24,8 +26,8 @@ public class GraphProgram extends Program {
 	  private JTextField ycord;
 	  private Grid grid;
 	  private HashMap<String,Polygon> graphPolygonsMap;
-	  private Vector<String> graphPolygonNames;
-	  private ComboBox<String> graphPolygons;
+	  private ArrayList<String> graphPolygonNames= new ArrayList<>();
+	  private JComboBox<String> graphPolygons;
 	private JTextField polygonName;
 	  
 	  public void init() {
@@ -43,8 +45,10 @@ public class GraphProgram extends Program {
 //		     gridScalePanel.add(gd.y_slide);
 //		     add(gridScalePanel);
 			
-			
-			graphPolygonNames = new Vector<String>();
+			//Adding a ComboBox on Screen
+			graphPolygonNames.add("Default");
+			 graphPolygons = new JComboBox(graphPolygonNames.toArray());
+			 add(graphPolygons);
 			 
 			 JPanel createPolygon = new JPanel();
 			 polygonName = new JTextField("Enter Polygon name",12);
@@ -52,6 +56,18 @@ public class GraphProgram extends Program {
 			 createPolygon.add(polygonName);
 			 createPolygon.add(new JButton("Create"));
 			 add(createPolygon);
+		     
+			   //add a UI for entering coordinates
+		     JPanel inputPanel = new JPanel();
+		     xcord = new JTextField("0",12);
+		     ycord = new JTextField("0",12);
+		     inputPanel.add(xcord);
+		     inputPanel.add(ycord);
+		     inputPanel.add(new JButton("Add Cordinate"));
+		     
+		     add(inputPanel);
+		     
+		    
 		     
 		     JPanel gridVisibilityPanel = new JPanel();
 		     gridVisibilityPanel.setLayout(new TableLayout(4,2));
@@ -70,17 +86,7 @@ public class GraphProgram extends Program {
 		     add(gridVisibilityPanel);
 		     
 		     
-		     //add a UI for entering coordinates
-		     JPanel inputPanel = new JPanel();
-		     xcord = new JTextField("0",12);
-		     ycord = new JTextField("0",12);
-		     inputPanel.add(xcord);
-		     inputPanel.add(ycord);
-		     inputPanel.add(new JButton("Add Cordinate"));
-		     
-		     add(inputPanel);
-		     
-		    
+		  
 		     
 	  }
 	public void run() {
@@ -135,9 +141,18 @@ public class GraphProgram extends Program {
 			graph.HideLabels();
 		}
 		if(e.getActionCommand().equals("Show Labels")) {
-			graph.ShowLabels();
+			graph.ShowLabels();	
+		}
+		
+		if(e.getActionCommand().equals("Create")) {
+			if(polygonName.getText().length() > 0) {
+				String polyname = polygonName.getText();
+				 graphPolygons.insertItemAt(polyname,0);
+				 graphPolygonNames.add(polyname);
+			}
 			
 		}
+		
 		if(e.getActionCommand().equals("Add Cordinate")) {
 			
 			double y = Double.parseDouble(ycord.getText());
