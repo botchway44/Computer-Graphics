@@ -36,6 +36,12 @@ public class GraphProgram extends Program {
 	  private ArrayList<String> graphLayerNames= new ArrayList<>();
 	  private JComboBox<String> graphLayers;
 	  private JTextField polygonName;
+	private JTextField rx;
+	private JTextField ry;
+	private JTextField tx;
+	private JTextField ty;
+	private JTextField sx;
+	private JTextField sy;
 	  
 	  public void init() {
 //		  this.setResizable(false);
@@ -49,11 +55,13 @@ public class GraphProgram extends Program {
 			
 			//Adding a ComboBox on Screen
 			 graphLayerNames.add("Default");
-			 graphLayers = new JComboBox(graphLayerNames.toArray());
+			 graphLayers = new JComboBox<String>();
+			 graphLayers.insertItemAt("Default", 0);
+			 graphLayers.setSelectedIndex(0);
 			 add(graphLayers);
 			 
 			 JPanel createPolygon = new JPanel();
-			 polygonName = new JTextField("Enter Polygon name",12);
+			 polygonName = new JTextField("Enter layer name",12);
 			
 			 createPolygon.add(polygonName);
 			 createPolygon.add(new JButton("Create"));
@@ -104,10 +112,10 @@ public class GraphProgram extends Program {
 		     add(new JLabel("Perform Rotations"));
 		     JPanel RotationPanel = new JPanel();
 		     
-		     xcord = new JTextField("0",12);
-		     ycord = new JTextField("0",12);
-		     RotationPanel.add(xcord);
-		     RotationPanel.add(ycord);
+		     rx = new JTextField("0",12);
+		     ry = new JTextField("0",12);
+		     RotationPanel.add(rx);
+		     RotationPanel.add(ry);
 		     RotationPanel.add(new JButton("Rotate"));
 		     
 		     add(RotationPanel);
@@ -116,10 +124,10 @@ public class GraphProgram extends Program {
 		     add(new JLabel("Perform Translations"));
 		     JPanel TranlationPanel = new JPanel();
 		     
-		     xcord = new JTextField("0",12);
-		     ycord = new JTextField("0",12);
-		     TranlationPanel.add(xcord);
-		     TranlationPanel.add(ycord);
+		     tx = new JTextField("0",12);
+		     ty = new JTextField("0",12);
+		     TranlationPanel.add(tx);
+		     TranlationPanel.add(ty);
 		     TranlationPanel.add(new JButton("Translate"));
 		     add(TranlationPanel);
 		     
@@ -127,10 +135,10 @@ public class GraphProgram extends Program {
 		     add(new JLabel("Perform Scale"));
 		     JPanel ScalePanel = new JPanel();
 		    
-		     xcord = new JTextField("0",12);
-		     ycord = new JTextField("0",12);
-		     ScalePanel.add(xcord);
-		     ScalePanel.add(ycord);
+		     sx = new JTextField("0",12);
+		     sy = new JTextField("0",12);
+		     ScalePanel.add(sx);
+		     ScalePanel.add(sy);
 		     ScalePanel.add(new JButton("Scale"));
 		     add(ScalePanel);
 		     
@@ -240,7 +248,7 @@ public class GraphProgram extends Program {
 			p.x = (int) x;
 			p.y = (int) y;
 			Point pv = GraphicsLibrary.getPixelPosition(grid, p);
-			graph.DrawOval(pv,Color.orange);
+			graph.DrawOval(pv, graphLayerMap.get(""+graphLayers.getSelectedItem()).getColor());
 			
 			//add point to Polygon
 			System.out.println("points "+ graphLayers.getSelectedItem() );
