@@ -3,17 +3,22 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.filechooser.FileSystemView;
 
 import acm.gui.TableLayout;
 import acm.program.DialogProgram;
@@ -45,7 +50,9 @@ public class GraphProgram extends Program {
 	  
 	  public void init() {
 //		  this.setResizable(false);
-			this.setLayout(new TableLayout(10,1));		
+		  TableLayout tbl = new TableLayout(10,1);
+		  tbl.setVgap(15);
+		  this.setLayout(tbl);		
 			
 			//init the Polygon Map
 			graphLayerMap = new HashMap<String,Layer>();
@@ -117,7 +124,8 @@ public class GraphProgram extends Program {
 		     RotationPanel.add(rx);
 		     RotationPanel.add(ry);
 		     RotationPanel.add(new JButton("Rotate"));
-		     
+
+		     RotationPanel.add(new JCheckBox("Origin"));
 		     add(RotationPanel);
 		     
 		     //add a UI for Performing Rotations
@@ -140,13 +148,15 @@ public class GraphProgram extends Program {
 		     ScalePanel.add(sx);
 		     ScalePanel.add(sy);
 		     ScalePanel.add(new JButton("Scale"));
+		     ScalePanel.add(new JCheckBox("Origin"));
+		     
 		     add(ScalePanel);
 		     
 	  }
 	public void run() {
-		  setSize(350,700);
+		  setSize(380,700);
 		  this.setResizable(false);
-		  grid = new Grid(700,700, -10, 10, -10, 10);
+		  grid = new Grid(600,600, -10, 10, -10, 10);
 		   
 		  
 	       graph  = new GraphUI(grid);
@@ -214,6 +224,54 @@ public class GraphProgram extends Program {
 		
 		if(e.getActionCommand().equals("Clear Canvas")) {
 			graph.clearGraph();
+		}
+		
+		
+		if(e.getActionCommand().equals("Delete Layer")) {
+			int res = JOptionPane.showConfirmDialog(this, "Do you want to Delete Layer");
+			System.out.println(res+"");
+		
+			//clear the layer points
+			if(res ==0 &&  !graphLayers.getSelectedItem().equals("Default")) {
+			graphLayerMap.remove(""+graphLayers.getSelectedItem());
+			graphLayerNames.remove(graphLayers.getSelectedItem());
+			graphLayers.remove( graphLayers.getSelectedIndex());
+			//TODO Remove name from list
+		}
+		}
+		
+		
+		if(e.getActionCommand().equals("Save Graph")) {
+			
+			try {
+			
+			JFileChooser ch =new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+
+			ch.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			if(ch.showSaveDialog(this) != JFileChooser.CANCEL_OPTION) {
+				FileSystemView path = ch.getFileSystemView();
+//				TODO save graph to location
+			}
+			}catch(Exception ex) {
+				
+			}
+		}
+		
+		
+		
+		if(e.getActionCommand().equals("Load Graph")) {
+			try {
+				JFileChooser ch =new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+				FileNameExtensionFilter filter = new FileNameExtensionFilter("Txt files", "txt");
+				ch.addChoosableFileFilter(filter);
+			if(ch.showOpenDialog(this) != JFileChooser.CANCEL_OPTION) {
+				File file = ch.getSelectedFile();
+				//Load file from Location
+			}
+			}catch(Exception ex) {
+				
+			}
+		
 		}
 		
 		
