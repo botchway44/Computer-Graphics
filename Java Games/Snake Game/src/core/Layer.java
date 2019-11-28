@@ -6,7 +6,8 @@ import java.util.ArrayList;
 
 	
 public class Layer {
-	private ArrayList<Point> points = new ArrayList<>();
+	private ArrayList<Point> pixel_points = new ArrayList<>();
+	private ArrayList<Point> graph_points = new ArrayList<>();
 	private Color color = Color.blue;
 	public Layer() {
 		
@@ -16,23 +17,34 @@ public class Layer {
 		this.color =c;
 	}
 	
+	public void setPixelPoints(ArrayList<Point> p) {
+		this.pixel_points = p;
+	}
 	
 	public Color getColor() {
 		return this.color;
 	}
 	
 	
-	public void addPoint(Point p) {
-		this.points.add(p);
+	public void addPixelPoint(Point p) {
+		this.pixel_points.add(p);
+	}
+	
+	public void addGraphPoint(Point p) {
+		this.graph_points.add(p);
 	}
 	
 	
 	public void clearPoints() {
-		this.points.clear();
+		this.pixel_points.clear();
 	}
 	
 	
-	public ArrayList<Point> getPoints(){
-	return this.points;
+	public ArrayList<Point> getPixelPoints(){
+	return this.pixel_points;
+	}
+	
+	public ArrayList<Point> getGraphPoints(){
+	return this.graph_points;
 	}
 }

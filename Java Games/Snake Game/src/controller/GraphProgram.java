@@ -29,7 +29,6 @@ import core.Layer;
 import javafx.scene.control.ListView;
 import models.Grid;
 import views.GraphUI;
-import views.PopUp;
 
 public class GraphProgram extends Program {
 	
@@ -276,13 +275,30 @@ public class GraphProgram extends Program {
 		
 		
 		if(e.getActionCommand().equals("Draw Selected Coord From Layer")) {
-			graph.DrawPolygonFromPoints( graphLayerMap.get(""+graphLayers.getSelectedItem()));	
+			graph.DrawLayerFromPoints( graphLayerMap.get(""+graphLayers.getSelectedItem()));	
 		}
 		
 		if(e.getActionCommand().equals("UnDraw")) {
-			graph.UnDrawPolygonFromPoints( graphLayerMap.get(""+graphLayers.getSelectedItem()));	
+			graph.UnDrawLayerFromPoints( graphLayerMap.get(""+graphLayers.getSelectedItem()));	
 		}
 		
+
+		if(e.getActionCommand().equals("Translate")) {
+			
+			Point vector = new Point();
+			vector.x = (int) Double.parseDouble(tx.getText());
+			vector.y = (int) Double.parseDouble(ty.getText());
+			
+			Layer l = GraphicsLibrary.TranslatePoint(grid, graphLayerMap.get(""+graphLayers.getSelectedItem()), vector);
+			l.setPixelPoints(GraphicsLibrary.computePixelPoints(grid, l.getGraphPoints()));
+			graphLayerMap.put(""+graphLayers.getSelectedItem(), l);
+			
+			graph.clearGraph();
+			graph.DrawLayerFromPoints(l);
+		}
+		
+		
+		//Creates a layer and Copies a random color to it
 		if(e.getActionCommand().equals("Create")) {
 			if(polygonName.getText().length() > 0) {
 				String polyname = polygonName.getText();
@@ -306,22 +322,39 @@ public class GraphProgram extends Program {
 			p.x = (int) x;
 			p.y = (int) y;
 			Point pv = GraphicsLibrary.getPixelPosition(grid, p);
+			
+			Point graph_point = new Point();
+			graph_point.x = (int) x;
+			graph_point.y =(int) y;
+			
+			
+			
 			graph.DrawOval(pv, graphLayerMap.get(""+graphLayers.getSelectedItem()).getColor());
 			
 			//add point to Polygon
 			System.out.println("points "+ graphLayers.getSelectedItem() );
-			addPointToSelectedPolygon(""+graphLayers.getSelectedItem(), pv);
+			addPixelPointToSelectedLayer(""+graphLayers.getSelectedItem(), pv);
 			}catch(Exception ex) {
 			System.err.print("Couldnt add Coordinate");				
 			}
 		}
 	}
 	
-	public void addPointToSelectedPolygon(String pname, Point p) {
+	public void addPixelPointToSelectedLayer(String pname, Point p) {
 		Layer pp = graphLayerMap.get(pname);
 		if(pp != null) {
-			pp.addPoint(p);
+			pp.addPixelPoint(p);
 			System.out.println("Added point to "+ pname );
+		}else {
+			System.err.print("Point cant be added");
+		}
+	}
+	
+	public void addGraphPointToSelectedLayer(String pname, Point p) {
+		Layer pp = graphLayerMap.get(pname);
+		if(pp != null) {
+			pp.addGraphPoint(p);
+			System.out.println("Added graph to "+ pname );
 		}else {
 			System.err.print("Point cant be added");
 		}

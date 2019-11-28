@@ -168,8 +168,8 @@ public class GraphUI extends GraphicsProgram implements Runnable{
 		add(ov,(int)p.getX() - ov.getWidth()/2, (int)p.getY() - ov.getHeight()/2);
 	}
 	
-	public void DrawPolygonFromPoints(Layer l) {
-		ArrayList<Point> p = l.getPoints();
+	public void DrawLayerFromPoints(Layer l) {
+		ArrayList<Point> p = l.getPixelPoints();
 		System.out.println("Begining Drawing");
 		
 		for(int i=0; i<p.size(); i++) {
@@ -186,8 +186,8 @@ public class GraphUI extends GraphicsProgram implements Runnable{
 			}
 	}
 	
-	public void UnDrawPolygonFromPoints(Layer l) {
-		ArrayList<Point> p = l.getPoints();
+	public void UnDrawLayerFromPoints(Layer l) {
+		ArrayList<Point> p = l.getPixelPoints();
 		try {
 		for(int i=0; i<p.size(); i++) {
 			GLine line = this.getElementAt(p.get(i).getX(), p.get(i).getY());
