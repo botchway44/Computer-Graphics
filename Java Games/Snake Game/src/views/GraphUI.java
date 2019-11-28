@@ -10,6 +10,7 @@ import acm.graphics.GLabel;
 import acm.graphics.GLine;
 import acm.graphics.GObject;
 import acm.graphics.GOval;
+import acm.graphics.GPolygon;
 import acm.program.GraphicsProgram;
 import models.Grid;
 
@@ -160,7 +161,54 @@ public class GraphUI extends GraphicsProgram implements Runnable{
 	
 	
 	public void DrawOval(Point p) {
-		add(new GOval(20,20),(int)p.getX() - 10, (int)p.getY() - 10);
+		GOval ov = new GOval(10,10);
+		ov.setFillColor(Color.orange);
+		ov.setFilled(true);
+		add(ov,(int)p.getX() - ov.getWidth()/2, (int)p.getY() - ov.getHeight()/2);
 	}
+	
+	public void DrawPolygonFromPoints(ArrayList<Point> p) {
+		System.out.println("Begining Drawing");
+		
+		for(int i=0; i<p.size(); i++) {
+			if(i == p.size()-1) {
+				GLine line = new GLine(p.get(i).getX(),p.get(i).getY(),p.get(0).getX(),p.get(0).getY());
+				DrawOval(p.get(i));
+				add(line);	
+			}else {
+				GLine line = new GLine(p.get(i).getX(),p.get(i).getY(),p.get(i+1).getX(),p.get(i+1).getY());
+				DrawOval(p.get(i));
+				add(line);	
+			}
+		
+			}
+	}
+	
+	public void UnDrawPolygonFromPoints(ArrayList<Point> p) {
+		try {
+		for(int i=0; i<p.size(); i++) {
+			GLine line = this.getElementAt(p.get(i).getX(), p.get(i).getY());
+			remove(line);	
+		}
+		
+		for(int i=0; i<p.size(); i++) {
+				GOval ov = this.getElementAt(p.get(i).getX() - 5, p.get(i).getY()-5);
+				
+				remove(ov);
+			}
+		
+		}catch(Exception ex) {
+				System.err.print("Cant undraw");
+		}
+		
+	}
+	
+	public void clearGraph() {
+		this.clearCanvas();
+		this.DrawHorizontal();
+		this.DrawVertical();
+		this.colorMids();
+	}
+	
 }
 

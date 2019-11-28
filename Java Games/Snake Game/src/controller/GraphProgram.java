@@ -14,7 +14,7 @@ import javax.swing.JTextField;
 import acm.gui.TableLayout;
 import acm.program.Program;
 import core.GraphicsLibrary;
-import core.Polygon;
+import core.Layer;
 import javafx.scene.control.ListView;
 import models.Grid;
 import views.GraphUI;
@@ -25,7 +25,7 @@ public class GraphProgram extends Program {
 	  private JTextField xcord;
 	  private JTextField ycord;
 	  private Grid grid;
-	  private HashMap<String,Polygon> graphPolygonsMap;
+	  private HashMap<String,Layer> graphPolygonsMap;
 	  private ArrayList<String> graphPolygonNames= new ArrayList<>();
 	  private JComboBox<String> graphPolygons;
 	private JTextField polygonName;
@@ -34,19 +34,14 @@ public class GraphProgram extends Program {
 //		  this.setResizable(false);
 			this.setLayout(new TableLayout(5,1));		
 			
-//		  GridController gd = new GridController();
-//		     gd.init();
-//		     
-//		     JPanel gridScalePanel = new JPanel();
-//		     gridScalePanel.add(new JLabel("X axis"));
-//		     gridScalePanel.add(gd.x_slide);
-//
-//		     gridScalePanel.add(new JLabel("Y axis"));
-//		     gridScalePanel.add(gd.y_slide);
-//		     add(gridScalePanel);
+			//init the Polygon Map
+			graphPolygonsMap = new HashMap<String,Layer>();
+			
+			//add a default Polygon to the Map
+			graphPolygonsMap.put("Default", new Layer());
 			
 			//Adding a ComboBox on Screen
-			graphPolygonNames.add("Default");
+			 graphPolygonNames.add("Default");
 			 graphPolygons = new JComboBox(graphPolygonNames.toArray());
 			 add(graphPolygons);
 			 
@@ -68,9 +63,11 @@ public class GraphProgram extends Program {
 		     add(inputPanel);
 		     
 		    
-		     
+		     //Grid Buttons
 		     JPanel gridVisibilityPanel = new JPanel();
-		     gridVisibilityPanel.setLayout(new TableLayout(4,2));
+		     gridVisibilityPanel.setLayout(new TableLayout(6,2));
+		     gridVisibilityPanel.add(new JButton("Draw Selected Coord From Layer"));
+		     gridVisibilityPanel.add(new JButton("UnDraw"));
 		     gridVisibilityPanel.add(new JButton("Remove Grid"));
 		     gridVisibilityPanel.add(new JButton("Show Grid"));
 		     
@@ -81,8 +78,11 @@ public class GraphProgram extends Program {
 		     gridVisibilityPanel.add(new JButton("Remove Vertical"));
 		     gridVisibilityPanel.add(new JButton("Show Vertical"));
 		     
-			 gridVisibilityPanel.add(new JButton("Remove Labels"));
+		     gridVisibilityPanel.add(new JButton("Remove Labels"));
 		     gridVisibilityPanel.add(new JButton("Show Labels"));
+		     
+			 gridVisibilityPanel.add(new JButton("Clear Layer"));
+		     gridVisibilityPanel.add(new JButton("Clear Canvas"));
 		     add(gridVisibilityPanel);
 		     
 		     
@@ -95,9 +95,6 @@ public class GraphProgram extends Program {
 		  grid = new Grid(700,700, -10, 10, -10, 10);
 		   
 		  
-	      
-	   
-	     
 	       graph  = new GraphUI(grid);
 	       graph.start();
 	       
@@ -122,7 +119,6 @@ public class GraphProgram extends Program {
 		}
 		
 		if(e.getActionCommand().equals("Show Vertical")) {
-			graph.ShowHorizontalLines();
 			graph.ShowVerticalLines();
 		}
 		
@@ -143,18 +139,37 @@ public class GraphProgram extends Program {
 		if(e.getActionCommand().equals("Show Labels")) {
 			graph.ShowLabels();	
 		}
+		if(e.getActionCommand().equals("Clear Layer")) {
+			graph.clearGraph();
+		}
+		
+		
+		if(e.getActionCommand().equals("Clear Canvas")) {
+			graph.clearGraph();
+		}
+		
+		
+		if(e.getActionCommand().equals("Draw Selected Coord From Layer")) {
+			graph.DrawPolygonFromPoints( graphPolygonsMap.get(""+graphPolygons.getSelectedItem()).getPoints());	
+		}
+		
+		if(e.getActionCommand().equals("UnDraw")) {
+			graph.UnDrawPolygonFromPoints( graphPolygonsMap.get(""+graphPolygons.getSelectedItem()).getPoints());	
+		}
 		
 		if(e.getActionCommand().equals("Create")) {
 			if(polygonName.getText().length() > 0) {
 				String polyname = polygonName.getText();
 				 graphPolygons.insertItemAt(polyname,0);
 				 graphPolygonNames.add(polyname);
+				 
+				 graphPolygonsMap.put(polyname, new Layer());	
 			}
 			
 		}
 		
 		if(e.getActionCommand().equals("Add Cordinate")) {
-			
+			try {
 			double y = Double.parseDouble(ycord.getText());
 			double x = Double.parseDouble(xcord.getText());
 			println("x =  "+ x +" y ="+y);
@@ -162,8 +177,24 @@ public class GraphProgram extends Program {
 			p.x = (int) x;
 			p.y = (int) y;
 			Point pv = GraphicsLibrary.getPixelPosition(grid, p);
-			
 			graph.DrawOval(pv);
+			
+			//add point to Polygon
+			System.out.println("points "+ graphPolygons.getSelectedItem() );
+			addPointToSelectedPolygon(""+graphPolygons.getSelectedItem(), pv);
+			}catch(Exception ex) {
+			System.err.print("Couldnt add Coordinate");				
+			}
+		}
+	}
+	
+	public void addPointToSelectedPolygon(String pname, Point p) {
+		Layer pp = graphPolygonsMap.get(pname);
+		if(pp != null) {
+			pp.addPoint(p);
+			System.out.println("Added point to "+ pname );
+		}else {
+			System.err.print("Point cant be added");
 		}
 	}
 }
