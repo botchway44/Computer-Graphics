@@ -2,6 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Users/Botwe/Documents/MATLAB/Computer-Graphics/Java Games/Snake Game/lib/spl.jar"/>
+	<classpathentry kind="lib" path="C:/Users/R E N E G A D E/Documents/GitHub/ComputerGraphics/Computer-Graphics/Java Games/Snake Game/lib/spl.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

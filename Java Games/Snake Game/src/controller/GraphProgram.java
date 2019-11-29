@@ -4,6 +4,7 @@ import java.awt.FlowLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
@@ -213,7 +214,7 @@ public class GraphProgram extends Program {
 			
 				//clear the layer points
 				if(res ==0) {
-				graphLayerMap.get(""+graphLayers.getSelectedItem()).clearPoints();;
+				graphLayerMap.get(""+graphLayers.getSelectedItem()).clearPoints();
 			}
 		}
 		
@@ -241,12 +242,15 @@ public class GraphProgram extends Program {
 			
 			try {
 			
-			JFileChooser ch =new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+			JFileChooser ch =new JFileChooser();
 
-			ch.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-			if(ch.showSaveDialog(this) != JFileChooser.CANCEL_OPTION) {
-				FileSystemView path = ch.getFileSystemView();
-//				TODO save graph to location
+			
+			int r = ch.showSaveDialog(this) ;
+			if( r == JFileChooser.APPROVE_OPTION) {
+				
+				String path = ch.getSelectedFile().getAbsolutePath();
+				GraphicsLibrary.SaveFile(graphLayerMap, path);
+				System.out.println( "Path " + path );
 			}
 			}catch(Exception ex) {
 				
@@ -260,9 +264,28 @@ public class GraphProgram extends Program {
 				JFileChooser ch =new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
 				FileNameExtensionFilter filter = new FileNameExtensionFilter("Txt files", "txt");
 				ch.addChoosableFileFilter(filter);
+				
+				
 			if(ch.showOpenDialog(this) != JFileChooser.CANCEL_OPTION) {
 				File file = ch.getSelectedFile();
 				System.out.println(file.getName());
+				
+				ArrayList<Layer> layers = GraphicsLibrary.ReadFile(file);
+				
+				
+				
+				for(int i=0; i<layers.size(); i++) {
+					
+					layers.get(i).setPixelPoints(GraphicsLibrary.computePixelPoints(grid,layers.get(i).getGraphPoints()));
+					
+					graphLayerMap.put(layers.get(i).getName(), layers.get(i));
+					graphLayers.insertItemAt(layers.get(i).getName(), 0);
+					graphLayerNames.add(layers.get(i).getName());
+				}
+				System.out.println("Done Reading file");
+				
+				
+				
 			}
 			}catch(Exception ex) {
 				
@@ -325,6 +348,7 @@ public class GraphProgram extends Program {
 				 graphLayerNames.add(polyname);
 				 
 				 Layer l = new Layer();
+				 l.setName(polyname);
 				 l.setColor(RandomGenerator.getInstance().nextColor());
 				 graphLayerMap.put(polyname, l);	
 				 

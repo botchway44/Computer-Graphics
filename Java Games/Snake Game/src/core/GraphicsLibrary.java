@@ -1,7 +1,12 @@
 package core;
 
 import java.awt.Point;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Scanner;
 
 import models.Grid;
 
@@ -106,6 +111,7 @@ public  class GraphicsLibrary {
 		
 		Layer new_layer = new Layer();
 		new_layer.setColor(layer.getColor());
+		new_layer.setName(layer.getName());
 		
 		for(int i=0; i<layer.getGraphPoints().size(); i++) {
 			Point pp = layer.getGraphPoints().get(i);
@@ -114,7 +120,7 @@ public  class GraphicsLibrary {
 			pp.y = (int) ((pp.getX()*Math.sin(rtheta)) + (Math.cos(rtheta) * pp.getY()));
 			
 			new_layer.addGraphPoint(pp);
-			System.err.println("Rotating x = "+pp.x + "y = "+pp.y);
+			System.err.println("Rotating x = "+pp.x + "y = "+pp.y+ " with "+ rtheta);
 		}
 		
 		new_layer.setPixelPoints(GraphicsLibrary.computePixelPoints(grid, new_layer.getGraphPoints()));
@@ -128,7 +134,7 @@ public  class GraphicsLibrary {
 		
 		Layer new_layer = new Layer();
 		new_layer.setColor(layer.getColor());
-		
+		new_layer.setName(layer.getName());
 		for(int i=0; i<layer.getGraphPoints().size(); i++) {
 			Point pp = layer.getGraphPoints().get(i);
 			
@@ -143,5 +149,65 @@ public  class GraphicsLibrary {
 		
 		return new_layer;
 	}
+	
+	
+	public static ArrayList<Layer> ReadFile(File file) throws FileNotFoundException {
+		Scanner scan = new Scanner(file);
+		ArrayList<Layer> layers = new ArrayList<Layer>();
+		while(scan.hasNextLine()) {
+			Layer layer = new Layer();
+			
+			String line = scan.nextLine();
+			String[] parts = line.split(" ");
+			String layerName = parts[0];
+			layer.setName(layerName);
+			
+			for(int i=1; i<parts.length; i++) {
+				String[] coord = parts[i].split(",");
+				
+				
+				double x = Double.parseDouble(coord[0]);
+				double y = Double.parseDouble(coord[1]);
+				
+				Point p = new Point();
+				p.x = (int) x;
+				p.y = (int) y;
+				
+				layer.addGraphPoint(p);
+			}
+			
+			layers.add(layer);
+		}
+		
+		scan.close();
+		return layers;
+	}
+
+
+
+	public static void SaveFile(HashMap<String,Layer> layers, String path) throws FileNotFoundException {
+		Scanner scan = new Scanner(new File(path));
+		
+		
+		try {
+			FileWriter fw = new FileWriter(path+".txt");
+			//TODO fix save
+			
+			for(String lname : layers.keySet()) {
+			Layer layer = layers.get(lname);
+			String line = layer.toString() + System.getProperty("line.separator");
+			
+			fw.write(line);
+			}
+			
+			fw.close();
+			
+			
+		}catch(Exception ex) {
+			
+		}
+		scan.close();
+	}
+
 
 }
