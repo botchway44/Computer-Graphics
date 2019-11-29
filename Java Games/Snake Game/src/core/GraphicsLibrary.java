@@ -110,7 +110,22 @@ public  class GraphicsLibrary {
 		for(int i=0; i<layer.getGraphPoints().size(); i++) {
 			Point pp = layer.getGraphPoints().get(i);
 			
-			pp.x = (int) ((pp.getX()*Math.cos(rtheta)) - (Math.sin(rtheta) * pp.getY()));
+			System.err.println("x = " + pp.getX() + " y = " + pp.getY() + " theta " + rtheta);
+			
+/*			rtheta = Math.toRadians(rtheta);
+*/			
+			double degree = (pp.x * Math.cos(rtheta) - pp.y * Math.sin(rtheta));
+			degree = Math.toRadians(degree);
+			System.err.println("Degree = " + degree);
+			
+			double xx = ((pp.x * Math.cos(rtheta)) - (pp.y * Math.sin(rtheta)));
+			double yy = ((pp.x * Math.sin(rtheta)) + (pp.y * Math.cos(rtheta)));
+			
+/*			xx = Math.toRadians(xx);
+*/			
+			System.err.println("doubles x = " + xx + " y = " + yy + " theta " + rtheta);
+			
+			pp.x = (int) ((pp.getX()*Math.cos(Math.PI * 180 / rtheta)) - (Math.sin(Math.PI * 180 / rtheta) * pp.getY()));
 			pp.y = (int) ((pp.getX()*Math.sin(rtheta)) + (Math.cos(rtheta) * pp.getY()));
 			
 			new_layer.addGraphPoint(pp);
