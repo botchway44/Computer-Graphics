@@ -170,7 +170,7 @@ public class GraphUI extends GraphicsProgram implements Runnable{
 	
 	public void DrawLayerFromPoints(Layer l) {
 		ArrayList<Point> p = l.getPixelPoints();
-		System.out.println("Begining Drawing");
+		System.out.println("Begining Drawing lenght "+ p.size() + " -> "+ l.getGraphPoints().size());
 		
 		for(int i=0; i<p.size(); i++) {
 			if(i == p.size()-1) {
@@ -182,7 +182,8 @@ public class GraphUI extends GraphicsProgram implements Runnable{
 				DrawOval(p.get(i), l.getColor());
 				add(line);	
 			}
-		
+			System.out.println("x = "+p.get(i).x + "y = "+p.get(i).y);
+			
 			}
 	}
 	

@@ -40,8 +40,7 @@ public class GraphProgram extends Program {
 	  private ArrayList<String> graphLayerNames= new ArrayList<>();
 	  private JComboBox<String> graphLayers;
 	  private JTextField polygonName;
-	private JTextField rx;
-	private JTextField ry;
+	private JTextField rtheta;
 	private JTextField tx;
 	private JTextField ty;
 	private JTextField sx;
@@ -118,10 +117,8 @@ public class GraphProgram extends Program {
 		     add(new JLabel("Perform Rotations"));
 		     JPanel RotationPanel = new JPanel();
 		     
-		     rx = new JTextField("0",12);
-		     ry = new JTextField("0",12);
-		     RotationPanel.add(rx);
-		     RotationPanel.add(ry);
+		     rtheta = new JTextField("0",12);
+		     RotationPanel.add(rtheta);
 		     RotationPanel.add(new JButton("Rotate"));
 
 		     RotationPanel.add(new JCheckBox("Origin"));
@@ -265,7 +262,7 @@ public class GraphProgram extends Program {
 				ch.addChoosableFileFilter(filter);
 			if(ch.showOpenDialog(this) != JFileChooser.CANCEL_OPTION) {
 				File file = ch.getSelectedFile();
-				//Load file from Location
+				System.out.println(file.getName());
 			}
 			}catch(Exception ex) {
 				
@@ -289,8 +286,30 @@ public class GraphProgram extends Program {
 			vector.x = (int) Double.parseDouble(tx.getText());
 			vector.y = (int) Double.parseDouble(ty.getText());
 			
+//			Point pp = GraphicsLibrary.getGraphPosition(grid,vector);
+//			System.out.println("x = "+pp.x + "y = "+pp.y);
+			System.out.println("Translating layer "+ graphLayers.getSelectedItem() + " -> "+ graphLayerMap.get(""+graphLayers.getSelectedItem()).getGraphPoints().size());
+			
 			Layer l = GraphicsLibrary.TranslatePoint(grid, graphLayerMap.get(""+graphLayers.getSelectedItem()), vector);
-			l.setPixelPoints(GraphicsLibrary.computePixelPoints(grid, l.getGraphPoints()));
+			
+			//l.setPixelPoints(GraphicsLibrary.computePixelPoints(grid, l.getGraphPoints()));
+			
+			graphLayerMap.put(""+graphLayers.getSelectedItem(), l);
+			
+			graph.clearGraph();
+			graph.DrawLayerFromPoints(l);
+		}
+		
+		
+		if(e.getActionCommand().equals("Rotate")) {
+			
+			Double angle =  Double.parseDouble(rtheta.getText());
+			
+			System.out.println("Rotating layer "+ graphLayers.getSelectedItem() + " -> "+ graphLayerMap.get(""+graphLayers.getSelectedItem()).getGraphPoints().size());
+			
+			Layer l = GraphicsLibrary.RotatePoint(grid, graphLayerMap.get(""+graphLayers.getSelectedItem()), angle);
+			
+			
 			graphLayerMap.put(""+graphLayers.getSelectedItem(), l);
 			
 			graph.clearGraph();
@@ -328,12 +347,14 @@ public class GraphProgram extends Program {
 			graph_point.y =(int) y;
 			
 			
+			System.out.println("Pixel Points x = "+pv.x + "y = "+pv.y);
 			
 			graph.DrawOval(pv, graphLayerMap.get(""+graphLayers.getSelectedItem()).getColor());
 			
 			//add point to Polygon
 			System.out.println("points "+ graphLayers.getSelectedItem() );
 			addPixelPointToSelectedLayer(""+graphLayers.getSelectedItem(), pv);
+			addGraphPointToSelectedLayer(""+graphLayers.getSelectedItem(), graph_point);
 			}catch(Exception ex) {
 			System.err.print("Couldnt add Coordinate");				
 			}
