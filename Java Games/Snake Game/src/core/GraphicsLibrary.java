@@ -185,18 +185,21 @@ public  class GraphicsLibrary {
 
 
 
-	public static void SaveFile(HashMap<String,Layer> layers, String path) throws FileNotFoundException {
-		Scanner scan = new Scanner(new File(path));
-		
-		
+	public static void SaveFile(HashMap<String,Layer> layers, String path) {
 		try {
+//		Scanner scan = new Scanner(new File(path));
+		
+		System.out.println("in save");
+		
 			FileWriter fw = new FileWriter(path+".txt");
 			//TODO fix save
 			
 			for(String lname : layers.keySet()) {
+				System.out.println("loopind");
 			Layer layer = layers.get(lname);
 			String line = layer.toString() + System.getProperty("line.separator");
-			
+			System.out.println(layer);
+			System.out.println(line);
 			fw.write(line);
 			}
 			
@@ -205,9 +208,44 @@ public  class GraphicsLibrary {
 			
 		}catch(Exception ex) {
 			
-		}
-		scan.close();
 	}
 
+	}
+
+	public static Layer ReflectXPoint(Grid grid, Layer layer) {
+		Layer new_layer = new Layer();
+		new_layer.setColor(layer.getColor());
+		new_layer.setName(layer.getName());
+		for(int i=0; i<layer.getGraphPoints().size(); i++) {
+			Point pp = layer.getGraphPoints().get(i);
+			
+			pp.y =  (int) (-pp.getY());
+			
+			new_layer.addGraphPoint(pp);
+			System.err.println("Translating x = "+pp.x + "y = "+pp.y);
+		}
+		
+		new_layer.setPixelPoints(GraphicsLibrary.computePixelPoints(grid, new_layer.getGraphPoints()));
+		
+		return new_layer;
+	}
+
+	public static Layer ReflectYPoint(Grid grid, Layer layer) {
+		Layer new_layer = new Layer();
+		new_layer.setColor(layer.getColor());
+		new_layer.setName(layer.getName());
+		for(int i=0; i<layer.getGraphPoints().size(); i++) {
+			Point pp = layer.getGraphPoints().get(i);
+			
+			pp.x =  (int) (-pp.getX());
+			
+			new_layer.addGraphPoint(pp);
+			System.err.println("Translating x = "+pp.x + "y = "+pp.y);
+		}
+		
+		new_layer.setPixelPoints(GraphicsLibrary.computePixelPoints(grid, new_layer.getGraphPoints()));
+		
+		return new_layer;
+	}
 
 }

@@ -49,15 +49,18 @@ public class GraphProgram extends Program {
 	  
 	  public void init() {
 //		  this.setResizable(false);
-		  TableLayout tbl = new TableLayout(10,1);
-		  tbl.setVgap(15);
+		  TableLayout tbl = new TableLayout(11,1);
+		  tbl.setVgap(8);
 		  this.setLayout(tbl);		
 			
 			//init the Polygon Map
 			graphLayerMap = new HashMap<String,Layer>();
 			
 			//add a default Polygon to the Map
-			graphLayerMap.put("Default", new Layer());
+			Layer la  = new Layer();
+			la.setColor(RandomGenerator.getInstance().nextColor());
+			la.setName("Default");
+			graphLayerMap.put("Default",la);
 			
 			//Adding a ComboBox on Screen
 			 graphLayerNames.add("Default");
@@ -148,6 +151,11 @@ public class GraphProgram extends Program {
 		     ScalePanel.add(new JCheckBox("Origin"));
 		     
 		     add(ScalePanel);
+		     
+		     JPanel reflectionPanel = new JPanel();
+		     reflectionPanel.add(new JButton("Reflection in the x"));
+		     reflectionPanel.add(new JButton("Reflection in the y"));
+		     add(reflectionPanel);
 		     
 	  }
 	public void run() {
@@ -249,8 +257,9 @@ public class GraphProgram extends Program {
 			if( r == JFileChooser.APPROVE_OPTION) {
 				
 				String path = ch.getSelectedFile().getAbsolutePath();
-				GraphicsLibrary.SaveFile(graphLayerMap, path);
+
 				System.out.println( "Path " + path );
+				GraphicsLibrary.SaveFile(graphLayerMap, path);
 			}
 			}catch(Exception ex) {
 				
@@ -301,6 +310,38 @@ public class GraphProgram extends Program {
 		if(e.getActionCommand().equals("UnDraw")) {
 			graph.UnDrawLayerFromPoints( graphLayerMap.get(""+graphLayers.getSelectedItem()));	
 		}
+		
+		
+		if(e.getActionCommand().equals("Reflection in the y")) {
+			
+			System.out.println("Reflecting  layer "+ graphLayers.getSelectedItem() + " -> "+ graphLayerMap.get(""+graphLayers.getSelectedItem()).getGraphPoints().size());
+			
+			Layer l = GraphicsLibrary.ReflectYPoint(grid, graphLayerMap.get(""+graphLayers.getSelectedItem()));
+			
+			//l.setPixelPoints(GraphicsLibrary.computePixelPoints(grid, l.getGraphPoints()));
+			
+			graphLayerMap.put(""+graphLayers.getSelectedItem(), l);
+			
+			graph.clearGraph();
+			graph.DrawLayerFromPoints(l);
+		}
+		
+		
+		
+		if(e.getActionCommand().equals("Reflection in the x")) {
+			
+			System.out.println("Reflecting  layer "+ graphLayers.getSelectedItem() + " -> "+ graphLayerMap.get(""+graphLayers.getSelectedItem()).getGraphPoints().size());
+			
+			Layer l = GraphicsLibrary.ReflectXPoint(grid, graphLayerMap.get(""+graphLayers.getSelectedItem()));
+			
+			//l.setPixelPoints(GraphicsLibrary.computePixelPoints(grid, l.getGraphPoints()));
+			
+			graphLayerMap.put(""+graphLayers.getSelectedItem(), l);
+			
+			graph.clearGraph();
+			graph.DrawLayerFromPoints(l);
+		}
+		
 		
 
 		if(e.getActionCommand().equals("Translate")) {

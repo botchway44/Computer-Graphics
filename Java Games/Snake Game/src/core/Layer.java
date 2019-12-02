@@ -65,9 +65,9 @@ public class Layer {
 		
 		for(int i=0; i<graph_points.size(); i++) {
 			Point p = graph_points.get(i);
-			res  = res + " "+p.x +","+p.y+" ";
+			res  = res + " "+p.x +","+p.y;
 		}
-		return name;
+		return res;
 		
 	}
 }
