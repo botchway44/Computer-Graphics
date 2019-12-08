@@ -99,7 +99,8 @@ public  class GraphicsLibrary {
 	
 
 	public static ArrayList<Point> computePixelPoints(Grid grid,ArrayList<Point> p){
-		ArrayList<Point> points = new ArrayList<Point>(); 
+		ArrayList<Point> points = 
+				new ArrayList<Point>(); 
 		for(int i=0; i<p.size(); i++) {
 		 points.add(GraphicsLibrary.getPixelPosition(grid, p.get(i)));
 		}
@@ -116,11 +117,22 @@ public  class GraphicsLibrary {
 		for(int i=0; i<layer.getGraphPoints().size(); i++) {
 			Point pp = layer.getGraphPoints().get(i);
 			
-			pp.x = (int) ((pp.getX()*Math.cos(rtheta)) - (Math.sin(rtheta) * pp.getY()));
-			pp.y = (int) ((pp.getX()*Math.sin(rtheta)) + (Math.cos(rtheta) * pp.getY()));
+			double xx = 0, yy = 0;
+			
+			double rad = Math.toRadians(rtheta);
+			
+			System.err.println(rad);
+			
+			xx = ((pp.getX()*Math.cos(rad)) - (Math.sin(rad) * pp.getY()));
+			yy = ((pp.getX()*Math.sin(rad)) + (Math.cos(rad) * pp.getY()));
+			
+			System.err.println(" Decimal Rotating x = " + xx + " y = " + yy);
+			
+			pp.x = (int) ((pp.getX()*Math.cos(rad)) - (Math.sin(rad) * pp.getY()));
+			pp.y = (int) ((pp.getX()*Math.sin(rad)) + (Math.cos(rad) * pp.getY()));
 			
 			new_layer.addGraphPoint(pp);
-			System.err.println("Rotating x = "+pp.x + "y = "+pp.y+ " with "+ rtheta);
+			System.err.println("Rotating x = "+ pp.x + " y = "+ pp.y+ " with "+ rtheta);
 		}
 		
 		new_layer.setPixelPoints(GraphicsLibrary.computePixelPoints(grid, new_layer.getGraphPoints()));
