@@ -195,7 +195,6 @@ public  class GraphicsLibrary {
 			//TODO fix save
 			
 			for(String lname : layers.keySet()) {
-				System.out.println("loopind");
 			Layer layer = layers.get(lname);
 			String line = layer.toString() + System.getProperty("line.separator");
 			System.out.println(layer);
