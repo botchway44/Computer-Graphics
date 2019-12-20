@@ -33,6 +33,7 @@ import views.GraphUI;
 
 public class GraphProgram extends Program {
 	
+	
 	  private GraphUI graph;
 	  private JTextField xcord;
 	  private JTextField ycord;
@@ -41,11 +42,12 @@ public class GraphProgram extends Program {
 	  private ArrayList<String> graphLayerNames= new ArrayList<>();
 	  private JComboBox<String> graphLayers;
 	  private JTextField polygonName;
-	private JTextField rtheta;
-	private JTextField tx;
-	private JTextField ty;
-	private JTextField sx;
-	private JTextField sy;
+	  private JTextField rtheta;
+	  private JTextField tx;
+	  private JTextField ty;
+	  private JTextField sx;
+	  private JCheckBox cb;
+	  private JTextField sy;
 	  
 	  public void init() {
 //		  this.setResizable(false);
@@ -125,7 +127,9 @@ public class GraphProgram extends Program {
 		     RotationPanel.add(rtheta);
 		     RotationPanel.add(new JButton("Rotate"));
 
-		     RotationPanel.add(new JCheckBox("Origin"));
+		     cb = new JCheckBox("Midpoint");
+		     RotationPanel.add(cb);
+		     cb.addActionListener(this);
 		     add(RotationPanel);
 		     
 		     //add a UI for Performing Rotations
@@ -216,10 +220,10 @@ public class GraphProgram extends Program {
 			JButton bb = (JButton) e.getSource();
 			bb.setForeground(res);
 		}
+		
 		if(e.getActionCommand().equals("Clear Layer")) {
 			int res = JOptionPane.showConfirmDialog(this, "Do you want to clear Layer");
 				System.out.println(res+"");
-			
 				//clear the layer points
 				if(res ==0) {
 				graphLayerMap.get(""+graphLayers.getSelectedItem()).clearPoints();
@@ -235,7 +239,6 @@ public class GraphProgram extends Program {
 		if(e.getActionCommand().equals("Delete Layer")) {
 			int res = JOptionPane.showConfirmDialog(this, "Do you want to Delete Layer");
 			System.out.println(res+"");
-		
 			//clear the layer points
 			if(res ==0 &&  !graphLayers.getSelectedItem().equals("Default")) {
 			graphLayerMap.remove(""+graphLayers.getSelectedItem());
@@ -247,17 +250,11 @@ public class GraphProgram extends Program {
 		
 		
 		if(e.getActionCommand().equals("Save Graph")) {
-			
 			try {
-			
 			JFileChooser ch =new JFileChooser();
-
-			
 			int r = ch.showSaveDialog(this) ;
 			if( r == JFileChooser.APPROVE_OPTION) {
-				
 				String path = ch.getSelectedFile().getAbsolutePath();
-
 				System.out.println( "Path " + path );
 				GraphicsLibrary.SaveFile(graphLayerMap, path);
 			}
@@ -280,9 +277,6 @@ public class GraphProgram extends Program {
 				System.out.println(file.getName());
 				
 				ArrayList<Layer> layers = GraphicsLibrary.ReadFile(file);
-				
-				
-				
 				for(int i=0; i<layers.size(); i++) {
 					
 					layers.get(i).setPixelPoints(GraphicsLibrary.computePixelPoints(grid,layers.get(i).getGraphPoints()));
@@ -343,6 +337,28 @@ public class GraphProgram extends Program {
 		}
 		
 		
+		
+		if(e.getActionCommand().equals("Scale")) {
+			
+			Point vector = new Point();
+			vector.x = (int) Double.parseDouble(sx.getText());
+			vector.y = (int) Double.parseDouble(sy.getText());
+			
+//			Point pp = GraphicsLibrary.getGraphPosition(grid,vector);
+//			System.out.println("x = "+pp.x + "y = "+pp.y);
+			System.out.println("Scaling layer "+ graphLayers.getSelectedItem() + " -> "+ graphLayerMap.get(""+graphLayers.getSelectedItem()).getGraphPoints().size());
+			
+			Layer l = GraphicsLibrary.ScaleAboutMidPoint(grid, graphLayerMap.get(""+graphLayers.getSelectedItem()), vector);
+			
+			//l.setPixelPoints(GraphicsLibrary.computePixelPoints(grid, l.getGraphPoints()));
+			
+			graphLayerMap.put(""+graphLayers.getSelectedItem(), l);
+			
+			graph.clearGraph();
+			graph.DrawLayerFromPoints(l);
+		}
+		
+		
 
 		if(e.getActionCommand().equals("Translate")) {
 			
@@ -366,14 +382,21 @@ public class GraphProgram extends Program {
 		
 		
 		if(e.getActionCommand().equals("Rotate")) {
-			
+		
 			Double angle =  Double.parseDouble(rtheta.getText());
 			
-			System.out.println("Rotating layer "+ graphLayers.getSelectedItem() + " -> "+ graphLayerMap.get(""+graphLayers.getSelectedItem()).getGraphPoints().size());
-			
-			Layer l = GraphicsLibrary.RotatePoint(grid, graphLayerMap.get(""+graphLayers.getSelectedItem()), angle);
+			Layer l = null;
 			
 			
+			if(cb.isSelected()) {
+				System.out.println("Rotating About MidPoint layer  "+ graphLayers.getSelectedItem() + " -> "+ graphLayerMap.get(""+graphLayers.getSelectedItem()).getGraphPoints().size());	
+				l = GraphicsLibrary.RotateAboutMidPoint(grid, graphLayerMap.get(""+graphLayers.getSelectedItem()), angle);	
+			
+				}else {
+					System.out.println("Rotating layer "+ graphLayers.getSelectedItem() + " -> "+ graphLayerMap.get(""+graphLayers.getSelectedItem()).getGraphPoints().size());	
+					l = GraphicsLibrary.RotatePoint(grid, graphLayerMap.get(""+graphLayers.getSelectedItem()), angle);	
+				
+			}
 			graphLayerMap.put(""+graphLayers.getSelectedItem(), l);
 			
 			graph.clearGraph();

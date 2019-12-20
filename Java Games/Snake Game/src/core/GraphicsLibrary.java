@@ -140,7 +140,107 @@ public  class GraphicsLibrary {
 		return new_layer;
 	}
 	
+
+
+	public static Layer ScaleAboutMidPoint(Grid grid, Layer layer,Point scaleFactor) {
+		
+		Layer new_layer = new Layer();
+		new_layer.setColor(layer.getColor());
+		new_layer.setName(layer.getName());
+		
+		double midx = findXMid(layer.getGraphPoints());
+		double midy = findYMid(layer.getGraphPoints());
+		
+		System.err.println("Midpoints x = "+ midx + " y = "+ midy);
+		for(int i=0; i<layer.getGraphPoints().size(); i++) {
+			Point pp = layer.getGraphPoints().get(i);
+			
+			//translate to the origin 0,0
+			pp.x = (int) (pp.x - midx);
+			pp.y = (int) (pp.y - midy);
+			
+			pp.x = (int) ((pp.getX()* scaleFactor.getX()));
+			pp.y = (int) ((pp.getY()* scaleFactor.getY()));
+			
+			
+			//translate to the original position
+			pp.x = (int) (pp.x + midx);
+			pp.y = (int) (pp.y + midy);
+			
+			new_layer.addGraphPoint(pp);
+			System.err.println("Scaling x = "+ pp.x + " y = "+ pp.y+ " with "+ scaleFactor.getX() + " "+ scaleFactor.getY());
+		}
+		
+		new_layer.setPixelPoints(GraphicsLibrary.computePixelPoints(grid, new_layer.getGraphPoints()));
+		
+		return new_layer;
+	}
 	
+	
+	public static Layer RotateAboutMidPoint(Grid grid, Layer layer,double rtheta) {
+		
+		Layer new_layer = new Layer();
+		new_layer.setColor(layer.getColor());
+		new_layer.setName(layer.getName());
+		
+		double midx = findXMid(layer.getGraphPoints());
+		double midy = findYMid(layer.getGraphPoints());
+		
+		System.err.println("Midpoints x = "+ midx + " y = "+ midy);
+		for(int i=0; i<layer.getGraphPoints().size(); i++) {
+			Point pp = layer.getGraphPoints().get(i);
+			
+			//translate to the origin 0,0
+			pp.x = (int) (pp.x - midx);
+			pp.y = (int) (pp.y - midy);
+			
+			double xx = 0, yy = 0;
+			
+			double rad = Math.toRadians(rtheta);
+			
+			System.err.println(rad);
+			
+			xx = ((pp.getX()*Math.cos(rad)) - (Math.sin(rad) * pp.getY()));
+			yy = ((pp.getX()*Math.sin(rad)) + (Math.cos(rad) * pp.getY()));
+			
+			System.err.println(" Decimal Rotating x = " + xx + " y = " + yy);
+			
+			pp.x = (int) ((pp.getX()*Math.cos(rad)) - (Math.sin(rad) * pp.getY()));
+			pp.y = (int) ((pp.getX()*Math.sin(rad)) + (Math.cos(rad) * pp.getY()));
+			
+			
+			//translate to the original position
+			pp.x = (int) (pp.x + midx);
+			pp.y = (int) (pp.y + midy);
+
+			new_layer.addGraphPoint(pp);
+			System.err.println("Rotating x = "+ pp.x + " y = "+ pp.y+ " with "+ rtheta);
+		}
+		
+		new_layer.setPixelPoints(GraphicsLibrary.computePixelPoints(grid, new_layer.getGraphPoints()));
+		
+		return new_layer;
+	}
+	
+	
+	private static double findYMid(ArrayList<Point> graphPoints) {
+		double res = 0;
+		
+		for(int i=0; i<graphPoints.size(); i++) {
+			res += graphPoints.get(i).getY();
+		}
+		return res/2;
+	}
+
+	public static double findXMid(ArrayList<Point> graphPoints) {
+		double res = 0;
+		
+		for(int i=0; i<graphPoints.size(); i++) {
+			res += graphPoints.get(i).getX();
+		}
+		return res/2;
+		
+	}
 	
 	public static Layer TranslatePoint(Grid grid, Layer layer,Point vector) {
 		
